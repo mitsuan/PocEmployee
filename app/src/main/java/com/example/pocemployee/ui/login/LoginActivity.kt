@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
     }
 
     /**
-     * showhelp is a onClickListener method for the login_help button
+     * showhelp method is a onClickListener method for the login_help button
      * which shows a Toast with the LOGIN_HELP_MESSAGE.
      */
     fun showHelp(view: View)
