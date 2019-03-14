@@ -9,9 +9,9 @@ import com.daimajia.swipe.SwipeLayout
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter
 import com.example.pocemployee.BR
 import com.example.pocemployee.R
-import com.example.pocemployee.databinding.EmployeeRowLayoutBinding
+import com.example.pocemployee.databinding.LayoutEmployeeItemBinding
 import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
-import kotlinx.android.synthetic.main.employee_row_layout.view.*
+import kotlinx.android.synthetic.main.layout_employee_item.view.*
 
 class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiResponse>, private val rowLayout: Int,
                           val deleteListener: ItemDeleteListener) : RecyclerSwipeAdapter<EmployeeDataAdapter.EmployeeViewHolder>() {
@@ -25,7 +25,7 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): EmployeeViewHolder {
 
         val view = LayoutInflater.from(viewGroup.context)
-        val binding: EmployeeRowLayoutBinding = DataBindingUtil.inflate(view, rowLayout, viewGroup, false)
+        val binding: LayoutEmployeeItemBinding = DataBindingUtil.inflate(view, rowLayout, viewGroup, false)
         return EmployeeViewHolder(binding)
     }
 
@@ -39,7 +39,7 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
         return employeeData.size
     }
 
-    inner class EmployeeViewHolder(val binding: EmployeeRowLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class EmployeeViewHolder(val binding: LayoutEmployeeItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private var employeeSwipeLayout: SwipeLayout = itemView.employee_row_swipe_layout
 

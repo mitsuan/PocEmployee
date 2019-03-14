@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="viewModel" type="com.example.pocemployee.ui.login.LoginViewModel"/>
+    </data>
+
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_padding"
+                    tools:context=".ui.login.LoginActivity">
+
+        <!-- Login progress -->
+        <ProgressBar
+                android:id="@+id/login_progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/email_login_form"
+                android:visibility="@{viewModel.loginProgressVisibility}"/>
+
+
+        <LinearLayout
+                android:id="@+id/email_login_form"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="@dimen/activity_padding"
-                tools:context=".ui.login.LoginActivity">
-
-    <!-- Login progress -->
-    <ProgressBar
-            android:id="@+id/login_progress"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/email_login_form"
-            android:visibility="gone"/>
-
-
-    <LinearLayout
-            android:id="@+id/email_login_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/login_bg"
-            android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/login_bg"
+                android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -41,6 +47,8 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
+                    android:text="@={viewModel.email}"
+                    app:error = "@{viewModel.emailError}"
                     android:singleLine="true"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -59,6 +67,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
+                    android:text="@={viewModel.password}"
+                    app:error="@{viewModel.passwordError}"
                     android:singleLine="true"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -74,7 +84,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
                         android:src="@android:drawable/ic_menu_help"
-                        android:onClick="showHelp"/>
+                        android:onClick="@{() -> viewModel.showHelp()}"/>
 
            <Button
                    android:id="@+id/log_in_button"
@@ -85,6 +95,7 @@
                    android:layout_alignParentEnd="true"
                    android:layout_alignParentRight="true"
                    android:text="@string/action_log_in"
+                   android:onClick="@{() -> viewModel.attemptLogin()}"
                    app:fontFamily="cursive"
                    android:textColor="@color/design_default_color_surface"
                    android:textStyle="bold"/>
@@ -93,3 +104,4 @@
     </LinearLayout>
 
 </RelativeLayout>
+</layout>

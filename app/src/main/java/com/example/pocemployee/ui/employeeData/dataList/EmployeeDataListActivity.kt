@@ -53,7 +53,7 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
 
         Log.d(TAG,"updating view")
         employeeDataAdapter = EmployeeDataAdapter(
-            employeeRecords!!, R.layout.employee_row_layout, this
+            employeeRecords!!, R.layout.layout_employee_item, this
         )
 
         employeeListProgressBar!!.visibility = View.GONE

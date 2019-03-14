@@ -1,12 +1,13 @@
 package com.example.pocemployee.ui.login
 
-import android.widget.EditText
+import androidx.lifecycle.MutableLiveData
 
 interface ILogin {
     interface ViewModel{
-        fun attemptLogin(email: EditText, password: EditText): Boolean
+        fun attemptLogin()
         fun isEmailValid(): Boolean
         fun isPasswordValid(): Boolean
+        val loginSuccessNotifier: MutableLiveData<Boolean>
     }
 
     interface View{

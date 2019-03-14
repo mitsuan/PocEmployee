@@ -2,13 +2,14 @@ package com.example.pocemployee.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.pocemployee.R
+import com.example.pocemployee.databinding.ActivityLoginBinding
 import com.example.pocemployee.ui.employeeData.DataSourceActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -17,13 +18,14 @@ import kotlinx.android.synthetic.main.activity_login.*
  */
 class LoginActivity : AppCompatActivity(), ILogin.View {
 
-    private val loginViewModel: ILogin.ViewModel by lazy {
+    private val loginViewModel: LoginViewModel by lazy {
         ViewModelProviders.of(this).get(LoginViewModel::class.java)
     }
 
-    val LOGIN_HELP_MESSAGE = "Valid email: user@mail.com\n" +
-            "Valid password : at least 8 characters long\n" +
-            "and contains at least one special character "
+    private val loginSuccessObserver =
+        Observer<Boolean> {
+                loginSuccess -> loginSuccess?.let { attemptLogin() }
+        }
 
     /**
      * This method sets listener for the password field and the log in button.
@@ -31,6 +33,14 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.pocemployee.R.layout.activity_login)
+
+        loginViewModel.loginSuccessNotifier.observe(this, loginSuccessObserver)
+
+
+        val binding: ActivityLoginBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_login)
+
+        binding.viewModel = loginViewModel
 
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -52,23 +62,8 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
      */
     override fun attemptLogin()
     {
-        if (loginViewModel.attemptLogin(email, password))
-        {
-            login_progress.visibility = View.VISIBLE
-            startActivity(Intent(this@LoginActivity, DataSourceActivity::class.java))
-        }
-        else
-        {
-            login_help.setBackgroundResource(R.drawable.help_button_bg)
-        }
+        startActivity(Intent(this@LoginActivity, DataSourceActivity::class.java))
+//            login_help.setBackgroundResource(R.drawable.help_button_bg)
     }
 
-    /**
-     * showhelp method is a onClickListener method for the login_help button
-     * which shows a Toast with the LOGIN_HELP_MESSAGE.
-     */
-    fun showHelp(view: View)
-    {
-        Toast.makeText(this, LOGIN_HELP_MESSAGE, Toast.LENGTH_LONG).show()
-    }
 }
