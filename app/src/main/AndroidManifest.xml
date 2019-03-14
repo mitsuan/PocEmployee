@@ -15,11 +15,7 @@
         <activity android:name="com.example.pocemployee.ui.employeeData.dataList.EmployeeDataListActivity">
         </activity>
         <activity
-                android:name=".ui.employeeData.DataSourceActivity"
-                android:parentActivityName="com.example.pocemployee.ui.login.LoginActivity">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.example.pocemployee.ui.login.LoginActivity"/>
+                android:name=".ui.employeeData.DataSourceActivity">
         </activity>
         <activity
                 android:name="com.example.pocemployee.ui.login.LoginActivity"
@@ -27,7 +23,6 @@
                 android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

@@ -12,7 +12,7 @@ import com.example.pocemployee.R
 import java.util.regex.Pattern
 
 /**
- * LoginViewModel is the ViewModel class of the View class LoginActivity.
+ * LoginViewModel is the ViewModel class of the View class [LoginActivity].
  * It performs the login attempt along with validation checks.
  */
 class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewModel{
@@ -21,12 +21,11 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
     var password: String? = ""
     var emailError: ObservableField<String>? = ObservableField()
     var passwordError: ObservableField<String>? = ObservableField()
+    var helpBackground: ObservableField<Boolean>? = ObservableField()
     var loginProgressVisibility = View.GONE
     override val loginSuccessNotifier  = MutableLiveData<Boolean>()
 
-    val LOGIN_HELP_MESSAGE = "Valid email: user@mail.com\n" +
-            "Valid password : at least 8 characters long\n" +
-            "and contains at least one special character "
+    private val LOGIN_HELP_MESSAGE = app.getString(R.string.login_help_message)
 
     /**
      * Attempts to log in based on credentials specified by the login form.
@@ -34,38 +33,18 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
      * errors are presented and no login attempt is made.
      */
     override fun attemptLogin(){
-
-        Log.d("LoginViewModel","in AttemptLogin()")
-
-        var isValid: Boolean
-
-        var cancel = false
-        var focusView: View? = null
-
-        isValid = isPasswordValid()
+        var isValid: Boolean = isPasswordValid()
         isValid = isEmailValid() && isValid
-//        if (!isPasswordValid()) {
-////            focusView = password
-//            cancel = true
-//        }
-//
-//        if (!isEmailValid()) {
-////            focusView = email
-//            cancel = true
-//        }
-//
-//        if (cancel) {
-////            focusView?.requestFocus()
-//        } else {
-//            isValid =  true
-//        }
+
         if(isValid)
         {
             loginSuccessNotifier.value = isValid
             loginProgressVisibility = View.VISIBLE
         }
-
-
+        else
+        {
+             helpBackground?.set(true)
+        }
     }
 
 
@@ -75,20 +54,27 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
      * and shows a validation error based on the error.
      */
     override fun isEmailValid(): Boolean{
+
+        Log.d("login view model: ","email: $email")
+
         var isNotEmpty = true
         var patternMatched = true
 
         if (TextUtils.isEmpty(email)) {
             emailError?.set(app.getString(R.string.error_field_required))
+            emailError?.notifyChange()
             isNotEmpty = false
 
-        } else {
+        }
+        else{
             val p = Pattern.compile(app.getString(R.string.email_regex))
             val m = p.matcher(email)
 
-            if(!m.find()){
+            patternMatched = m.find()
+            Log.d("loginViewModel:if","pattern( ${app.getString(R.string.email_regex)} ) matched: $patternMatched")
+            if(!patternMatched){
                 emailError?.set(app.getString(R.string.error_invalid_email))
-                patternMatched = false
+                emailError?.notifyChange()
             }
         }
 
@@ -102,6 +88,8 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
      * contains at least one special character.
      */
     override fun isPasswordValid(): Boolean{
+
+        Log.d("login view model: ","password: $password")
 
         var errorString = ""
 
@@ -121,8 +109,9 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
         if(!hasSplChars)
             errorString += app.getString(R.string.error_invalid_password)
 
-        if(errorString.isNotEmpty())
+        if(errorString.isNotEmpty() && errorString.isNotEmpty())
             passwordError?.set(errorString)
+            passwordError?.notifyChange()
 
         return passwordLengthFlag && hasSplChars
     }

@@ -5,13 +5,16 @@
     <string name="prompt_password">Password</string>
     <string name="action_log_in">Log in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="email_regex">[a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]{2,4}</string>
+    <string name="email_regex">^[a-z0-9._%-]+@[a-z0-9.-]+\\.[a-z]{2,4}$</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_short_password">This password is too short</string>
     <string name="error_invalid_password">This password should have 1 spl. character</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
+    </string>
+    <string name="login_help_message">"Valid email: user@mail.com\n Valid password : at least 8 characters long
+        and has at least 1 special character "
     </string>
     <string name="local_db">DB</string>
     <string name="api">API</string>

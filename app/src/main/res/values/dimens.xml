@@ -6,5 +6,8 @@
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="element_margin">10dp</dimen>
     <dimen name="heading_text_size">30sp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="card_radius">24dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
 
 </resources>
