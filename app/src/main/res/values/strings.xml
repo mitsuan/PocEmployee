@@ -21,4 +21,11 @@
     <string name="list_of_data_sources">Select the data source</string>
     <string name="employee_list_label">Employee List</string>
     <string name="local_db_refresh">Refresh DB</string>
+
+    <!-- TODO: Add your Cognito pool details here -->
+    <string name="cognito_web_domain">mock-user-pool.auth.us-east-2.amazoncognito.com</string>
+    <string name="cognito_client_id">10pol84o6s1iv7tuduak9kqlr3</string>
+    <string name="cognito_client_secret">71gqo0n326ts9bldic9hih3072gnlpa04gs9g9kn2u23fgkac40</string>
+    <string name="app_redirect">mockapp://demo.cognitoauth1.com/signin</string>
+
 </resources>

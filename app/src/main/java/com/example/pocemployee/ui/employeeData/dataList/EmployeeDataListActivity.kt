@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pocemployee.R
@@ -16,6 +15,7 @@ import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
 import com.example.pocemployee.ui.employeeData.DataSourceActivity
 import com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter
 import kotlinx.android.synthetic.main.activity_data_list.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 /**
@@ -30,9 +30,7 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
     private var employeeDataAdapter: EmployeeDataAdapter? = null
     private var employeeListProgressBar : ProgressBar?=null
 
-    private val employeeDataListViewModel: IEmployeeDataList.ViewModel by lazy {
-        ViewModelProviders.of(this).get(EmployeeDataListViewModel::class.java)
-    }
+    private val employeeDataListViewModel: EmployeeDataListViewModel by viewModel()
 
     private val employeeDataChangeObserver =
         Observer<MutableList<EmployeeApiResponse>> {
@@ -72,6 +70,8 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_list)
 
+//        var employeeDataListRepo : EmployeeDataListRepo = get()
+
         employeeListProgressBar = employee_list_progress_bar
 
         employeeListRecyclerView = employee_list_recycler_view
@@ -109,11 +109,11 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
      * The onDestroy method is overridden to close the DB connection when the
      * activity is destroyed after pressing back button
      */
-    override fun onDestroy() {
-        employeeDataListViewModel.closeDB()
-        super.onDestroy()
-
-    }
+//    override fun onDestroy() {
+//        employeeDataListViewModel.closeDB()
+//        super.onDestroy()
+//
+//    }
 
     /**
      * onItemDeleteListener is an overridden method of the EmployeeDataAdapter.ItemDeleteListener interface.

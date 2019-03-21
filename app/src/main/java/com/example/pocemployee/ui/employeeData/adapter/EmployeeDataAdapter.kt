@@ -53,6 +53,7 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
 
             with(binding){
                 binding.setVariable(BR.employeeId,employeeData[position].id)
+                binding.setVariable(BR.employeeName,employeeData[position].employeeName)
                 binding.setVariable(BR.deleteListener,this@EmployeeDataAdapter.deleteListener)
                 binding.setVariable(BR.viewHolder, this@EmployeeViewHolder)
                 executePendingBindings()

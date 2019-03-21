@@ -5,20 +5,18 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.pocemployee.R
 import com.example.pocemployee.databinding.ActivityLoginBinding
 import com.example.pocemployee.ui.employeeData.DataSourceActivity
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * This activity is a View class for handling the login UI.
  */
 class LoginActivity : AppCompatActivity(), ILogin.View {
 
-    private val loginViewModel: LoginViewModel by lazy {
-        ViewModelProviders.of(this).get(LoginViewModel::class.java)
-    }
 
+    private val loginViewModel: LoginViewModel by viewModel()
     private val loginSuccessObserver =
         Observer<Boolean> {
                 loginSuccess -> loginSuccess?.let { attemptLogin() }

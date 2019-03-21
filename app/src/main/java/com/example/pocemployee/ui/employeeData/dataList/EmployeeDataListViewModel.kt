@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.pocemployee.repo.employeeData.EDataSource
 import com.example.pocemployee.repo.employeeData.EmployeeDataListRepo
-import com.example.pocemployee.repo.employeeData.EmployeeDataListRepoImpl
 import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,19 +16,15 @@ import retrofit2.Response
  * EmployeeDataListViewModel is the ViewModel class for the DataListActvity View class.
  * It handles the fetching of employee data from DB or API and setting the LiveData.
  */
-class EmployeeDataListViewModel(application: Application) : AndroidViewModel(application),
-    IEmployeeDataList.ViewModel, Callback<MutableList<EmployeeApiResponse>>  {
+class EmployeeDataListViewModel(application: Application, var employeeDataListRepo: EmployeeDataListRepo) :
+    AndroidViewModel(application), IEmployeeDataList.ViewModel, Callback<MutableList<EmployeeApiResponse>>  {
 
     private val  TAG = EmployeeDataListViewModel::class.java.simpleName
     override val employeeDataChangeNotifier = MutableLiveData<MutableList<EmployeeApiResponse>>()
     private var employeeRecords : MutableList<EmployeeApiResponse>? = null
-    private var employeeDataListRepo: EmployeeDataListRepo?=null
     private var storeDataToDBFlag = false
     override var dataSource: EDataSource? = null
 
-    init{
-        employeeDataListRepo = EmployeeDataListRepoImpl(getApplication())
-    }
 
     /**
      * getDataFromApi method is called when the dataSource is selcted as API.
@@ -37,7 +32,7 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
      */
     override fun getDataFromApi()
     {
-        employeeDataListRepo?.getServerData(this)
+        employeeDataListRepo.getServerData(this)
     }
 
     /**
@@ -54,7 +49,7 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
             if(storeDataToDBFlag){
                 employeeRecords?.let {
                     Thread {
-                        employeeDataListRepo?.storeDataToDB(it)
+                        employeeDataListRepo.storeDataToDB(it)
                     }.start()
                 }
             }
@@ -86,7 +81,7 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
      */
     override fun refreshDB() {
         Thread{
-            employeeDataListRepo?.deleteAllEntries()
+            employeeDataListRepo.deleteAllEntries()
             getDataFromDB()
         }.start()
     }
@@ -96,11 +91,11 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
      * on pressing the back button. This method calls the closeDBConnection method of the EmployeeDataListRepoImpl
      * class to safely close the DB connection and avoid any data loss in the DB.
      */
-    override fun closeDB() {
-        Thread{
-            employeeDataListRepo?.closeDBConnection()
-        }.start()
-    }
+//    override fun closeDB() {
+//        Thread{
+////            employeeDataListRepo.closeDBConnection()
+//        }.start()
+//    }
 
     /**
      * deleteEmployeeEntry method is used to delete an employee record
@@ -114,7 +109,7 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
     {
         if(dataSource == EDataSource.DB) {
             Thread {
-                employeeDataListRepo?.deleteDBEntry(id)
+                employeeDataListRepo.deleteDBEntry(id)
             }.start()
         }
     }
@@ -128,7 +123,7 @@ class EmployeeDataListViewModel(application: Application) : AndroidViewModel(app
     inner class GetDBData: AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void?{
 
-            employeeRecords = employeeDataListRepo?.getDBData()
+            employeeRecords = employeeDataListRepo.getDBData()
 
             return null
         }

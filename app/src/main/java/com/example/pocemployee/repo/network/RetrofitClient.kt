@@ -1,21 +1,11 @@
 package com.example.pocemployee.repo.network
 
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+class RetrofitClient{
 
-object RetrofitClient {
+//    companion object{
+//        var client: Retrofit = Retrofit.Builder().baseUrl(EmployeeDataListRepoImpl.EMPLOYEE_DATA_API).addConverterFactory(MoshiConverterFactory.create()).build()
+//    }
 
-    private var client: Retrofit? = null
-
-
-    fun getRetrofitClient(url: String): Retrofit? {
-
-        if(client == null)
-            client = Retrofit.Builder().baseUrl(url).addConverterFactory(MoshiConverterFactory.create()).build()
-
-        return client
-
-    }
 
 
 }

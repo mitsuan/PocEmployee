@@ -16,7 +16,7 @@ interface IEmployeeDataList{
         fun getDataFromApi()
         fun getDataFromDB()
         fun refreshDB()
-        fun closeDB()
+//        fun closeDB()
         fun deleteEmployeeEntry(id: String)
     }
 }

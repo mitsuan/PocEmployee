@@ -1,12 +1,9 @@
 package com.example.pocemployee.repo.employeeData
 
-import android.content.Context
 import android.util.Log
-import androidx.room.Room
 import com.example.pocemployee.repo.employeeData.database.DBEmployee
 import com.example.pocemployee.repo.employeeData.database.DBEmployeeEntity
 import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
-import com.example.pocemployee.repo.network.RetrofitClient
 import com.example.pocemployee.ui.employeeData.dataList.EmployeeDataListViewModel
 import retrofit2.Retrofit
 
@@ -14,13 +11,9 @@ import retrofit2.Retrofit
  * The EmployeeDataListRepoImpl class is the repository class for the EmployeeDataListViewModel used to
  * fetch data from the DB or through an API call.
  */
-class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
+class EmployeeDataListRepoImpl(private var apiClient : Retrofit, private var db : DBEmployee ): EmployeeDataListRepo {
 
     private val  TAG = EmployeeDataListRepoImpl::class.java.simpleName
-    private val EMPLOYEE_DATA_API = "http://dummy.restapiexample.com/api/v1/"
-    private var apiClient : Retrofit?= null
-    private var db : DBEmployee? = null
-
 
     /**
      * getDBData method is used to fetch all the enrties in the DB
@@ -30,13 +23,13 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
     override fun getDBData(): MutableList<EmployeeApiResponse>?
     {
         val employeeRecords: List<EmployeeApiResponse>?
-        if(db?.employeeDao()?.getAll()?.isEmpty()!!)
+        if(db.employeeDao().getAll().isEmpty())
         {
             return null
         }
         else {
             employeeRecords = mutableListOf()
-            val employeeRecordsFromDB :List<DBEmployeeEntity> = db!!.employeeDao().getAll()
+            val employeeRecordsFromDB :List<DBEmployeeEntity> = db.employeeDao().getAll()
             Log.d(TAG, employeeRecordsFromDB[0].toString())
 
             for((index,employeeRecord) in employeeRecordsFromDB.withIndex())
@@ -66,10 +59,10 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
      */
     override fun deleteDBEntry(id: String)
     {
-        val entryToDelete = db?.employeeDao()?.getById(id)
+        val entryToDelete = db.employeeDao().getById(id)
         Log.d(TAG, "entry to delete: $entryToDelete")
-        val dbResponse = db?.employeeDao()?.deleteById(id)
-        val entry = db?.employeeDao()?.getById(id)
+        val dbResponse = db.employeeDao().deleteById(id)
+        val entry = db.employeeDao().getById(id)
         Log.d(TAG,"deleting id: $id --> $dbResponse")
         Log.d(TAG, "entry not deleted : $entry")
     }
@@ -80,7 +73,7 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
      */
     override fun deleteAllEntries()
     {
-            db?.employeeDao()?.deleteAll()
+        db.employeeDao().deleteAll()
     }
 
 
@@ -92,16 +85,16 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
      * This parameter is a MutableList of EmployeeApiResponse objects which is fetched through the API call.
      */
     override fun storeDataToDB(employeeRecords:MutableList<EmployeeApiResponse>) {
-        var index = db?.employeeDao()?.getAll()?.size
+        var index = db.employeeDao().getAll().size
         for (employeeRecord in employeeRecords) {
 
-            val dbEmployeeEntity = DBEmployeeEntity(index!!, employeeRecord.id, employeeRecord.employeeName,
+            val dbEmployeeEntity = DBEmployeeEntity(index, employeeRecord.id, employeeRecord.employeeName,
                 employeeRecord.employeeSalary, employeeRecord.employeeAge, employeeRecord.profileImage)
 
             index++
 
             try{
-                db?.employeeDao()?.insertAll(dbEmployeeEntity)
+                db.employeeDao().insertAll(dbEmployeeEntity)
             }
             catch (exception: Exception)
             {
@@ -112,16 +105,6 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
         }
     }
 
-    /**
-     * closeDBConnection method is used to close the conection to the DB
-     * to avoid any loss of data in the DB.
-     */
-    override fun closeDBConnection()
-    {
-        db?.close()
-        Log.d(TAG, "DB connection closed -->  db: $db")
-
-    }
 
     /**
      * getServerData method uses the retrofit client object to fetch the employee data through the API.
@@ -132,21 +115,10 @@ class EmployeeDataListRepoImpl(appContext: Context): EmployeeDataListRepo {
      */
     override fun getServerData(employeeDataListViewModel: EmployeeDataListViewModel)
     {
-        val employeeApiEndpoint = apiClient!!.create(EmployeeApiEndpoint::class.java)
+        val employeeApiEndpoint = apiClient.create(EmployeeApiEndpoint::class.java)
         val call = employeeApiEndpoint.getEmployeeData()
         call.enqueue(employeeDataListViewModel)
     }
 
 
-    /**
-     * Initialising the DB object and the retrofit client object
-     */
-    init{
-        db = Room.databaseBuilder(
-            appContext,
-            DBEmployee::class.java, "employee-database"
-        ).build()
-
-        apiClient = RetrofitClient.getRetrofitClient(EMPLOYEE_DATA_API)
-    }
 }
