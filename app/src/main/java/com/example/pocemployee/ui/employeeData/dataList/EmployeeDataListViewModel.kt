@@ -5,19 +5,73 @@ import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.pocemployee.R
 import com.example.pocemployee.repo.employeeData.EDataSource
 import com.example.pocemployee.repo.employeeData.EmployeeDataListRepo
 import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
+import com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.random.Random
 
 /**
  * EmployeeDataListViewModel is the ViewModel class for the DataListActvity View class.
  * It handles the fetching of employee data from DB or API and setting the LiveData.
  */
-class EmployeeDataListViewModel(application: Application, var employeeDataListRepo: EmployeeDataListRepo) :
-    AndroidViewModel(application), IEmployeeDataList.ViewModel, Callback<MutableList<EmployeeApiResponse>>  {
+class EmployeeDataListViewModel(val app: Application, var employeeDataListRepo: EmployeeDataListRepo) :
+    AndroidViewModel(app), IEmployeeDataList.ViewModel, Callback<MutableList<EmployeeApiResponse>>, EmployeeDataAdapter.ItemClickListener  {
+
+    val employeeChartDataNotifier = MutableLiveData<BarData>()
+
+    override fun showChart(employeeId: String) {
+
+        val entries = ArrayList<BarEntry>()
+        val healthColors = ArrayList<Int>()
+
+        healthColors.add(app.resources.getColor(R.color.bad_health))
+        healthColors.add(app.resources.getColor(R.color.normal_health))
+        healthColors.add(app.resources.getColor(R.color.good_health))
+
+        val dataPoints = 40
+        val employeeHealthData =listOf((1..dataPoints).toList(), List(dataPoints) { Random.nextInt(0, 5) })
+        for(index in (0 until employeeHealthData[0].size-1))
+        {
+            entries.add(BarEntry(employeeHealthData[0][index].toFloat(), employeeHealthData[1][index].toFloat()))
+            println("${employeeHealthData[0][index].toFloat()}, ${employeeHealthData[1][index].toFloat()}")
+
+//            when(employeeHealthData[1][index])
+//            {
+//                1 -> {
+//                    healthColors.add(app.resources.getColor(R.color.bad_health))
+//                }
+//                2 -> {
+//                    healthColors.add(app.resources.getColor(R.color.bad_health))
+//                }
+//                3 -> {
+//                    healthColors.add(app.resources.getColor(R.color.normal_health))
+//                }
+//                4 -> {
+//                    healthColors.add(app.resources.getColor(R.color.normal_health))
+//                }
+//                5-> {
+//                    healthColors.add(app.resources.getColor(R.color.good_health))
+//                }
+//
+//            }
+
+        }
+
+        val barDataSet = BarDataSet(entries,"health data")
+
+        barDataSet.colors = healthColors
+
+        val barData = BarData(barDataSet)
+        employeeChartDataNotifier.value = barData
+    }
 
     private val  TAG = EmployeeDataListViewModel::class.java.simpleName
     override val employeeDataChangeNotifier = MutableLiveData<MutableList<EmployeeApiResponse>>()
@@ -27,7 +81,7 @@ class EmployeeDataListViewModel(application: Application, var employeeDataListRe
 
 
     /**
-     * getDataFromApi method is called when the dataSource is selcted as API.
+     * getDataFromApi method is called when the dataSource is selected as API.
      * It uses the object of the EmployeeDataListRepoImpl class to fetch the data through the API call.
      */
     override fun getDataFromApi()

@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="light_green_bg">#D5ECEA</color>
+    <color name="normal_health">#03A9F4</color>
+    <color name="good_health">#4CAF50</color>
+    <color name="bad_health">#E91E63</color>
 </resources>

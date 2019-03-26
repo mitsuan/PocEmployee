@@ -12,13 +12,16 @@
                   type="com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter.EmployeeViewHolder"/>
         <variable name="deleteListener"
                   type="com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter.ItemDeleteListener"/>
+        <variable name="clickListener"
+                  type="com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter.ItemClickListener"/>
 
     </data>
     <com.daimajia.swipe.SwipeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/element_margin"
-            android:id="@+id/employee_row_swipe_layout">
+            android:id="@+id/employee_row_swipe_layout"
+            android:onClick="@{() -> clickListener.showChart(employeeId)}">
 
 
         <!-- Bottom View Start-->

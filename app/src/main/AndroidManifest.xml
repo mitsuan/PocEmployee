@@ -15,7 +15,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name="com.example.pocemployee.ui.employeeData.dataList.EmployeeDataListActivity">
+        <activity
+                android:name="com.example.pocemployee.ui.employeeData.dataList.EmployeeDataListActivity">
         </activity>
         <activity
                 android:name=".ui.employeeData.DataSourceActivity">
@@ -34,6 +35,7 @@
                 <data android:scheme="mockapp" android:host="demo.cognitoauth1.com" android:path="/signin"/>
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -48,5 +48,14 @@
                 android:layout_margin="@dimen/element_margin"
                 android:text="@string/api"/>
     </LinearLayout>
+    <Button
+            android:text="@string/log_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/signout_button"
+            android:background="@drawable/logout_button_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="signOut"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

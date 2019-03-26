@@ -14,6 +14,7 @@ import com.example.pocemployee.repo.employeeData.EDataSource
 import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
 import com.example.pocemployee.ui.employeeData.DataSourceActivity
 import com.example.pocemployee.ui.employeeData.adapter.EmployeeDataAdapter
+import com.github.mikephil.charting.data.BarData
 import kotlinx.android.synthetic.main.activity_data_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -36,6 +37,14 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         Observer<MutableList<EmployeeApiResponse>> {
                 employeeRecords -> employeeRecords?.let { updateView(employeeRecords) }
         }
+    private val employeeChartDataObserver = Observer<BarData>{
+        employeeChartData ->
+        employee_chart.data = employeeChartData
+        employee_chart.animateXY(3000, 1000)
+        employee_chart.isScaleYEnabled = false
+        employee_chart.invalidate()
+        Log.d(TAG, "updated chart")
+    }
 
     /**
      * updateView method is called when the Observable LiveData is changed by the
@@ -51,7 +60,7 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
 
         Log.d(TAG,"updating view")
         employeeDataAdapter = EmployeeDataAdapter(
-            employeeRecords!!, R.layout.layout_employee_item, this
+            employeeRecords!!, R.layout.layout_employee_item, this,employeeDataListViewModel
         )
 
         employeeListProgressBar!!.visibility = View.GONE
@@ -70,8 +79,6 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_list)
 
-//        var employeeDataListRepo : EmployeeDataListRepo = get()
-
         employeeListProgressBar = employee_list_progress_bar
 
         employeeListRecyclerView = employee_list_recycler_view
@@ -80,40 +87,33 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         employeeListRecyclerView?.layoutManager = employeeListLayoutManager
 
         employeeDataListViewModel.employeeDataChangeNotifier.observe(this, employeeDataChangeObserver)
+        employeeDataListViewModel.employeeChartDataNotifier.observe(this, employeeChartDataObserver)
 
-        val intent : Intent = getIntent()
-        val dataSourceMessage = intent.getSerializableExtra(
+        val activityIntent : Intent = intent
+        val dataSourceMessage = activityIntent.getSerializableExtra(
             DataSourceActivity.SOURCE_MESSAGE
         ) as EDataSource
 
-        if(dataSourceMessage == EDataSource.API)
-        {
-            employeeDataListViewModel.dataSource = EDataSource.API
-            employeeDataListViewModel.getDataFromApi()
+        when (dataSourceMessage) {
+            EDataSource.API -> {
+                employeeDataListViewModel.dataSource = EDataSource.API
+                employeeDataListViewModel.getDataFromApi()
 
-        }
-        else if(dataSourceMessage == EDataSource.DB)
-        {
-            employeeDataListViewModel.dataSource = EDataSource.DB
-            employeeDataListViewModel.getDataFromDB()
-        }
-        else if(dataSourceMessage == EDataSource.DB_REFRESH)
-        {
-            employeeDataListViewModel.dataSource = EDataSource.DB_REFRESH
-            employeeDataListViewModel.refreshDB()
+            }
+            EDataSource.DB -> {
+                employeeDataListViewModel.dataSource = EDataSource.DB
+                employeeDataListViewModel.getDataFromDB()
+            }
+            EDataSource.DB_REFRESH -> {
+                employeeDataListViewModel.dataSource = EDataSource.DB_REFRESH
+                employeeDataListViewModel.refreshDB()
+            }
+            else ->{
+
+            }
         }
 
     }
-
-    /**
-     * The onDestroy method is overridden to close the DB connection when the
-     * activity is destroyed after pressing back button
-     */
-//    override fun onDestroy() {
-//        employeeDataListViewModel.closeDB()
-//        super.onDestroy()
-//
-//    }
 
     /**
      * onItemDeleteListener is an overridden method of the EmployeeDataAdapter.ItemDeleteListener interface.

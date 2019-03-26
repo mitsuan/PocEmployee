@@ -1,6 +1,7 @@
 package com.example.pocemployee.ui.login
 
 import android.app.Application
+import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -9,13 +10,18 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.pocemployee.R
+import com.example.pocemployee.repo.login.AWSLoginInteractor
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.util.regex.Pattern
 
 /**
- * LoginViewModel is the ViewModel class of the View class [LoginActivity].
+ * LoginViewModel is the ViewModel class of the View class [AWSLoginActivity].
  * It performs the login attempt along with validation checks.
  */
-class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewModel{
+class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewModel, KoinComponent{
+
+    val TAG = LoginViewModel::class.java.simpleName
 
     var email: String? = ""
     var password: String? = ""
@@ -23,10 +29,10 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
     var passwordError: ObservableField<String>? = ObservableField()
     var helpBackground: ObservableField<Boolean>? = ObservableField()
     var loginProgressVisibility = View.GONE
+    val awsLoginInteractor: AWSLoginInteractor by inject()
     override val loginSuccessNotifier  = MutableLiveData<Boolean>()
 
     private val LOGIN_HELP_MESSAGE = app.getString(R.string.login_help_message)
-
     /**
      * Attempts to log in based on credentials specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -45,6 +51,13 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
         {
              helpBackground?.set(true)
         }
+    }
+
+    fun awsCognitoLogin()
+    {
+        awsLoginInteractor.auth?.getSession()
+        loginProgressVisibility= View.VISIBLE
+//        auth?.getSession()
     }
 
 
@@ -124,4 +137,12 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
     {
         Toast.makeText(app, LOGIN_HELP_MESSAGE, Toast.LENGTH_LONG).show()
     }
+
+    fun onResume(intent: Intent?) {
+
+        if (intent?.data != null && awsLoginInteractor.appRedirect?.host == intent.data!!.host) {
+            awsLoginInteractor.auth?.getTokens(intent.data)
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.example.pocemployee.repo.employeeData.EmployeeDataListRepo
 import com.example.pocemployee.repo.employeeData.EmployeeDataListRepoImpl
 import com.example.pocemployee.repo.employeeData.database.DBEmployee
+import com.example.pocemployee.repo.login.AWSLoginInteractor
 import com.example.pocemployee.ui.employeeData.dataList.EmployeeDataListViewModel
 import com.example.pocemployee.ui.login.LoginViewModel
 import okhttp3.Interceptor
@@ -27,14 +28,21 @@ fun getRetrofitClient(okHttpClient: OkHttpClient,url: String):Retrofit
 }
 
 
-val appModule : Module = module{
+val employeeModule : Module = module{
 
     viewModel { EmployeeDataListViewModel(get(),get()) }
 
     single<EmployeeDataListRepo> { EmployeeDataListRepoImpl(get(), get(EMPLOYEE_DB)) }
 
+}
+
+val loginModule: Module = module{
+
     viewModel { LoginViewModel(get()) }
 
+    single{
+        AWSLoginInteractor(get())
+    }
 }
 
 val dbModule : Module = module{

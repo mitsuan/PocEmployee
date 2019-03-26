@@ -14,7 +14,7 @@ import com.example.pocemployee.repo.employeeData.model.EmployeeApiResponse
 import kotlinx.android.synthetic.main.layout_employee_item.view.*
 
 class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiResponse>, private val rowLayout: Int,
-                          val deleteListener: ItemDeleteListener) : RecyclerSwipeAdapter<EmployeeDataAdapter.EmployeeViewHolder>() {
+                          val deleteListener: ItemDeleteListener, val clickListener: ItemClickListener) : RecyclerSwipeAdapter<EmployeeDataAdapter.EmployeeViewHolder>() {
 
     private val TAG = EmployeeDataAdapter::class.java.simpleName
 
@@ -55,6 +55,7 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
                 binding.setVariable(BR.employeeId,employeeData[position].id)
                 binding.setVariable(BR.employeeName,employeeData[position].employeeName)
                 binding.setVariable(BR.deleteListener,this@EmployeeDataAdapter.deleteListener)
+                binding.setVariable(BR.clickListener,this@EmployeeDataAdapter.clickListener)
                 binding.setVariable(BR.viewHolder, this@EmployeeViewHolder)
                 executePendingBindings()
             }
@@ -70,6 +71,10 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
         {   employeeData.removeAt(adapterPosition)
             notifyItemRemoved(adapterPosition)
         }
+    }
+
+    interface ItemClickListener{
+        fun showChart(employeeId: String)
     }
 
     interface ItemDeleteListener{
