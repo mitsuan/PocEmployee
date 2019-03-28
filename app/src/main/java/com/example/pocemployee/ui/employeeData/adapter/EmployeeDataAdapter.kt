@@ -41,10 +41,9 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
 
     inner class EmployeeViewHolder(val binding: LayoutEmployeeItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private var employeeSwipeLayout: SwipeLayout = itemView.employee_row_swipe_layout
+        var employeeSwipeLayout: SwipeLayout = itemView.employee_row_swipe_layout
 
         fun bind(position: Int) {
-            adapterPosition
             employeeSwipeLayout.showMode = SwipeLayout.ShowMode.LayDown
             employeeSwipeLayout.addDrag(SwipeLayout.DragEdge.Right,employeeSwipeLayout.bottom_wrapper)
             employeeSwipeLayout.addDrag(SwipeLayout.DragEdge.Left, null)
@@ -74,7 +73,7 @@ class EmployeeDataAdapter(private val employeeData: MutableList<EmployeeApiRespo
     }
 
     interface ItemClickListener{
-        fun showChart(employeeId: String)
+        fun showChart(employeeId: String, employeeName: String)
     }
 
     interface ItemDeleteListener{

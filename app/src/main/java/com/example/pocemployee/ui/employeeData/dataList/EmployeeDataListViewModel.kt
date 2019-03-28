@@ -18,6 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
 
+
 /**
  * EmployeeDataListViewModel is the ViewModel class for the DataListActvity View class.
  * It handles the fetching of employee data from DB or API and setting the LiveData.
@@ -25,53 +26,7 @@ import kotlin.random.Random
 class EmployeeDataListViewModel(val app: Application, var employeeDataListRepo: EmployeeDataListRepo) :
     AndroidViewModel(app), IEmployeeDataList.ViewModel, Callback<MutableList<EmployeeApiResponse>>, EmployeeDataAdapter.ItemClickListener  {
 
-    val employeeChartDataNotifier = MutableLiveData<BarData>()
-
-    override fun showChart(employeeId: String) {
-
-        val entries = ArrayList<BarEntry>()
-        val healthColors = ArrayList<Int>()
-
-        healthColors.add(app.resources.getColor(R.color.bad_health))
-        healthColors.add(app.resources.getColor(R.color.normal_health))
-        healthColors.add(app.resources.getColor(R.color.good_health))
-
-        val dataPoints = 40
-        val employeeHealthData =listOf((1..dataPoints).toList(), List(dataPoints) { Random.nextInt(0, 5) })
-        for(index in (0 until employeeHealthData[0].size-1))
-        {
-            entries.add(BarEntry(employeeHealthData[0][index].toFloat(), employeeHealthData[1][index].toFloat()))
-            println("${employeeHealthData[0][index].toFloat()}, ${employeeHealthData[1][index].toFloat()}")
-
-//            when(employeeHealthData[1][index])
-//            {
-//                1 -> {
-//                    healthColors.add(app.resources.getColor(R.color.bad_health))
-//                }
-//                2 -> {
-//                    healthColors.add(app.resources.getColor(R.color.bad_health))
-//                }
-//                3 -> {
-//                    healthColors.add(app.resources.getColor(R.color.normal_health))
-//                }
-//                4 -> {
-//                    healthColors.add(app.resources.getColor(R.color.normal_health))
-//                }
-//                5-> {
-//                    healthColors.add(app.resources.getColor(R.color.good_health))
-//                }
-//
-//            }
-
-        }
-
-        val barDataSet = BarDataSet(entries,"health data")
-
-        barDataSet.colors = healthColors
-
-        val barData = BarData(barDataSet)
-        employeeChartDataNotifier.value = barData
-    }
+    val employeeChartDataNotifier = MutableLiveData<Pair<BarData,String>>()
 
     private val  TAG = EmployeeDataListViewModel::class.java.simpleName
     override val employeeDataChangeNotifier = MutableLiveData<MutableList<EmployeeApiResponse>>()
@@ -141,17 +96,6 @@ class EmployeeDataListViewModel(val app: Application, var employeeDataListRepo: 
     }
 
     /**
-     * closeDB method is called by the EmployeeDataListActivity when that activity is destroyed
-     * on pressing the back button. This method calls the closeDBConnection method of the EmployeeDataListRepoImpl
-     * class to safely close the DB connection and avoid any data loss in the DB.
-     */
-//    override fun closeDB() {
-//        Thread{
-////            employeeDataListRepo.closeDBConnection()
-//        }.start()
-//    }
-
-    /**
      * deleteEmployeeEntry method is used to delete an employee record
      * with a given id from the DB, only if the dataSource is DB.
      *
@@ -196,4 +140,66 @@ class EmployeeDataListViewModel(val app: Application, var employeeDataListRepo: 
             }
         }
     }
+
+    /**
+     * showChart method is called on clicking an employee entry on the list
+     * It generates a random health data for 30 days and adds it to the dataset
+     * for the Bar chart.
+     * The dataset is updated in a live data.
+     */
+    override fun showChart(employeeId: String,employeeName: String) {
+
+        val entries = ArrayList<BarEntry>()
+        val healthColors = ArrayList<Int>()
+
+        healthColors.add(app.resources.getColor(R.color.bad_health))
+        healthColors.add(app.resources.getColor(R.color.normal_health))
+        healthColors.add(app.resources.getColor(R.color.good_health))
+
+        val dataPoints = 30
+        val seed = employeeId.toInt()
+        val random = Random(seed)
+        val employeeHealthData =listOf((1..dataPoints).toList(), List(dataPoints) { random.nextInt(0, 10) })
+        for(index in (0 until employeeHealthData[0].size-1))
+        {
+            entries.add(BarEntry(employeeHealthData[0][index].toFloat(), employeeHealthData[1][index].toFloat()))
+            println("${employeeHealthData[0][index].toFloat()}, ${employeeHealthData[1][index].toFloat()}")
+
+        }
+
+        val barDataSet = MyBarDataSet(entries,"health data")
+
+        barDataSet.colors = healthColors
+
+        val barData = BarData(barDataSet)
+        employeeChartDataNotifier.value = Pair(barData,employeeName)
+    }
+
+
+    /**
+     * Sub-class of BarDataSet to override the getColor()
+     */
+    inner class MyBarDataSet(yVals: List<BarEntry>, label: String) : BarDataSet(yVals, label)
+    {
+        override fun getEntryIndex(e: BarEntry?): Int
+        {
+            return super.getEntryIndex(e)
+        }
+
+        override fun getColor(index: Int): Int {
+            return when {
+                getEntryForIndex(index).y<= 2
+                    // less than or equal to 2:  red
+                -> mColors[0]
+                getEntryForIndex(index).y <= 6
+                    // less than blue
+                -> mColors[1]
+                else
+                    // greater or equal than 100 red
+                -> mColors[2]
+            }
+        }
+
+    }
+
 }

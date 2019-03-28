@@ -29,7 +29,7 @@ class AWSLoginInteractor(val app: Application){
             .setApplicationContext(app)
             .setAuthHandler(Callback())
             .setSignInRedirect(app.getString(R.string.app_redirect))
-            .setSignOutRedirect(app.getString(R.string.app_redirect))
+            .setSignOutRedirect(app.getString(R.string.app_logout_redirect))
 
         auth = builder.build()
         appRedirect = Uri.parse(app.getString(R.string.app_redirect))
@@ -44,7 +44,7 @@ class AWSLoginInteractor(val app: Application){
         override fun onSuccess(authUserSession: AuthUserSession) {
             Log.d(TAG, "success callback")
             loginSuccessNotifier.value = true
-            logoutSuccessNotifier.value = false
+            loginSuccessNotifier.value = false
             Log.d(TAG, "access token: $authUserSession.accessToken")
             Log.d(TAG, "id token: $authUserSession.idToken")
             Log.d(TAG, "isValid : ${authUserSession.isValid}")
@@ -53,8 +53,6 @@ class AWSLoginInteractor(val app: Application){
 
         override fun onSignout() {
             Log.d(TAG, "signout callback")
-            logoutSuccessNotifier.value = true
-            loginSuccessNotifier.value = false
         }
 
         override fun onFailure(e: Exception) {

@@ -33,6 +33,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="mockapp" android:host="demo.cognitoauth1.com" android:path="/signin"/>
+                <data android:scheme="mockapp" android:host="demo.cognitoauth1.com" android:path="/signout"/>
+
             </intent-filter>
         </activity>
 

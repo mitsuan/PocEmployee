@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import com.example.pocemployee.R
 import com.example.pocemployee.databinding.ActivityLoginBinding
 import com.example.pocemployee.ui.employeeData.DataSourceActivity
-import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
@@ -45,11 +44,17 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
 
     override fun onResume() {
         super.onResume()
+
         Log.d(TAG, "in onResume() method! ")
 
         val activityIntent = intent
-        if (intent?.data != null && loginViewModel.awsLoginInteractor.appRedirect?.host == activityIntent ?.data!!.host) {
-            loginViewModel.awsLoginInteractor.auth?.getTokens(activityIntent .data)
+        if (activityIntent?.data != null && loginViewModel.awsLoginInteractor.appRedirect?.host == activityIntent ?.data!!.host) {
+            loginViewModel.awsLoginInteractor.auth?.getTokens(activityIntent.data)
+            Log.d(TAG,"activity intent data: ${activityIntent.data}")
+            if(activityIntent.data.toString() != getString(R.string.app_logout_redirect))
+            {
+                loginViewModel.loginProgressVisibility.set(View.VISIBLE)
+            }
         }
 
     }
@@ -63,8 +68,6 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
 
         Log.d(TAG, "in attemptLogin()")
         startActivity(Intent(this@LoginActivity, DataSourceActivity::class.java))
-        login_progress.visibility = View.GONE
-
     }
 
 }

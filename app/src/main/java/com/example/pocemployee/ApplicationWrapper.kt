@@ -9,7 +9,6 @@ class ApplicationWrapper: Application(){
     {
         super.onCreate()
         startKoin(this,listOf(loginModule, employeeModule, dbModule, remoteModule),loadPropertiesFromFile = true)
-//        setProperty("EMPLOYEE_DATA_API","http://dummy.restapiexample.com/api/v1/")
 
     }
 }

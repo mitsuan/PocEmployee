@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/element_margin"
             android:id="@+id/employee_row_swipe_layout"
-            android:onClick="@{() -> clickListener.showChart(employeeId)}">
+            android:onClick="@{() -> clickListener.showChart(employeeId,employeeName)}">
 
 
         <!-- Bottom View Start-->

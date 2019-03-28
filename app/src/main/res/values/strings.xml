@@ -27,6 +27,7 @@
     <string name="cognito_client_id">10pol84o6s1iv7tuduak9kqlr3</string>
     <string name="cognito_client_secret">71gqo0n326ts9bldic9hih3072gnlpa04gs9g9kn2u23fgkac40</string>
     <string name="app_redirect">mockapp://demo.cognitoauth1.com/signin</string>
+    <string name="app_logout_redirect">mockapp://demo.cognitoauth1.com/signout</string>
     <string name="log_out">Log out</string>
 
 </resources>

@@ -8,6 +8,5 @@ interface EmployeeDataListRepo {
     fun deleteDBEntry(id: String)
     fun deleteAllEntries()
     fun storeDataToDB(employeeRecords: MutableList<EmployeeApiResponse>)
-//    fun closeDBConnection()
     fun getServerData(employeeDataListViewModel: EmployeeDataListViewModel)
 }

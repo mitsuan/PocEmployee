@@ -37,35 +37,9 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         Observer<MutableList<EmployeeApiResponse>> {
                 employeeRecords -> employeeRecords?.let { updateView(employeeRecords) }
         }
-    private val employeeChartDataObserver = Observer<BarData>{
+    private val employeeChartDataObserver = Observer<Pair<BarData,String>>{
         employeeChartData ->
-        employee_chart.data = employeeChartData
-        employee_chart.animateXY(3000, 1000)
-        employee_chart.isScaleYEnabled = false
-        employee_chart.invalidate()
-        Log.d(TAG, "updated chart")
-    }
-
-    /**
-     * updateView method is called when the Observable LiveData is changed by the
-     * ViewModel (EmployeeDataListViewModel).
-     * It sets the adapter of the recycler view and sets the visibility of the
-     * progress bar to "GONE".
-     *
-     * @param employeeRecords
-     * This parameter is a list of the employee records fetched either from the
-     * DB or API call and used to fill the recycler view through its adapter.
-     */
-    override fun updateView(employeeRecords: MutableList<EmployeeApiResponse>?) {
-
-        Log.d(TAG,"updating view")
-        employeeDataAdapter = EmployeeDataAdapter(
-            employeeRecords!!, R.layout.layout_employee_item, this,employeeDataListViewModel
-        )
-
-        employeeListProgressBar!!.visibility = View.GONE
-
-        employeeListRecyclerView?.adapter = employeeDataAdapter
+        updateChart(employeeChartData)
     }
 
     /**
@@ -108,9 +82,6 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
                 employeeDataListViewModel.dataSource = EDataSource.DB_REFRESH
                 employeeDataListViewModel.refreshDB()
             }
-            else ->{
-
-            }
         }
 
     }
@@ -128,6 +99,48 @@ class EmployeeDataListActivity : AppCompatActivity(), IEmployeeDataList.View, Em
         Log.d(TAG, "called delete listener")
         employeeDataListViewModel.deleteEmployeeEntry(id)
         viewHolder.remove()
+    }
+
+    /**
+     * updateView method is called when the Observable LiveData is changed by the
+     * ViewModel (EmployeeDataListViewModel).
+     * It sets the adapter of the recycler view and sets the visibility of the
+     * progress bar to "GONE".
+     *
+     * @param employeeRecords
+     * This parameter is a list of the employee records fetched either from the
+     * DB or API call and used to fill the recycler view through its adapter.
+     */
+    override fun updateView(employeeRecords: MutableList<EmployeeApiResponse>?) {
+
+        Log.d(TAG,"updating view")
+        employeeDataAdapter = EmployeeDataAdapter(
+            employeeRecords!!, R.layout.layout_employee_item, this,employeeDataListViewModel
+        )
+
+        employeeListProgressBar!!.visibility = View.GONE
+
+        employeeListRecyclerView?.adapter = employeeDataAdapter
+    }
+
+    /**
+     * updateChart method is called when the LiveData is set with chart data by the
+     * ViewModel (EmployeeDataListViewModel).
+     *
+     * @param employeeChartData
+     * This parameter is a pair of a list of an employee's health data of one month
+     * and the employee name.
+     *
+     */
+    override fun updateChart(employeeChartData: Pair<BarData, String>?) {
+        employee_chart.data = employeeChartData?.first
+        employee_chart.zoom(-3f,0f,0f,0f)
+        employee_chart.isScaleYEnabled = false
+        employee_chart.zoom(3f,0f,0f,0f)
+        employee_chart.animateXY(3000, 1000)
+        employee_chart.description.text = employeeChartData?.second
+        employee_chart.invalidate()
+        Log.d(TAG, "updated chart")
     }
 
 }

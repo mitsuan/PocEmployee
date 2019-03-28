@@ -1,7 +1,6 @@
 package com.example.pocemployee.ui.login
 
 import android.app.Application
-import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -28,9 +27,13 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
     var emailError: ObservableField<String>? = ObservableField()
     var passwordError: ObservableField<String>? = ObservableField()
     var helpBackground: ObservableField<Boolean>? = ObservableField()
-    var loginProgressVisibility = View.GONE
+    var loginProgressVisibility : ObservableField<Int> = ObservableField()
     val awsLoginInteractor: AWSLoginInteractor by inject()
     override val loginSuccessNotifier  = MutableLiveData<Boolean>()
+
+    init{
+        loginProgressVisibility.set(View.GONE)
+    }
 
     private val LOGIN_HELP_MESSAGE = app.getString(R.string.login_help_message)
     /**
@@ -45,7 +48,8 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
         if(isValid)
         {
             loginSuccessNotifier.value = isValid
-            loginProgressVisibility = View.VISIBLE
+            awsLoginInteractor.logoutSuccessNotifier.value = false
+            loginProgressVisibility.set(View.VISIBLE)
         }
         else
         {
@@ -55,9 +59,8 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
 
     fun awsCognitoLogin()
     {
+        loginProgressVisibility.set(View.VISIBLE)
         awsLoginInteractor.auth?.getSession()
-        loginProgressVisibility= View.VISIBLE
-//        auth?.getSession()
     }
 
 
@@ -136,13 +139,6 @@ class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewMo
     fun showHelp()
     {
         Toast.makeText(app, LOGIN_HELP_MESSAGE, Toast.LENGTH_LONG).show()
-    }
-
-    fun onResume(intent: Intent?) {
-
-        if (intent?.data != null && awsLoginInteractor.appRedirect?.host == intent.data!!.host) {
-            awsLoginInteractor.auth?.getTokens(intent.data)
-        }
     }
 
 }
