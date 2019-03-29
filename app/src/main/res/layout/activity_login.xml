@@ -17,6 +17,16 @@
                     android:padding="@dimen/activity_padding"
                     tools:context=".ui.login.LoginActivity">
 
+        <FrameLayout
+                android:id="@+id/frameLayoutContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_above="@id/login_card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp">
+
+        </FrameLayout>
+
         <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

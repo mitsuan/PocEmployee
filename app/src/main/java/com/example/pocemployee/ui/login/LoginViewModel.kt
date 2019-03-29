@@ -15,7 +15,7 @@ import org.koin.standalone.inject
 import java.util.regex.Pattern
 
 /**
- * LoginViewModel is the ViewModel class of the View class [AWSLoginActivity].
+ * LoginViewModel is the ViewModel class of the View class [LoginActivity].
  * It performs the login attempt along with validation checks.
  */
 class LoginViewModel(val app: Application): AndroidViewModel(app), ILogin.ViewModel, KoinComponent{

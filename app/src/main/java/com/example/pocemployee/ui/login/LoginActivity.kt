@@ -59,6 +59,13 @@ class LoginActivity : AppCompatActivity(), ILogin.View {
 
     }
 
+    fun setLoginFragment(){
+        val loginFragment = LoginFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frameLayoutContainer, loginFragment)
+        transaction.commit()
+    }
+
     /**
      * This method checks performs the login attempt using the loginViewModel object
      * and based on the Boolean response it either makes the progress bar visible and

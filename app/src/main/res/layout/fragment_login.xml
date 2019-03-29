@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+</LinearLayout>
+
+<RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:background="@color/light_green_bg"
+                android:padding="@dimen/activity_padding"
+                tools:context=".ui.login.LoginActivity">
+
+<FrameLayout
+        android:id="@+id/frameLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@id/login_card"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp">
+
+</FrameLayout>
+
+<androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:cardCornerRadius="@dimen/card_radius"
+        android:id="@+id/login_card"
+        android:elevation="@dimen/card_elevation">
+
+    <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/card_padding"
+            android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:text="@={viewModel.email}"
+                    app:error = "@{viewModel.emailError}"
+                    android:singleLine="true"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="6"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:text="@={viewModel.password}"
+                    app:error="@{viewModel.passwordError}"
+                    android:singleLine="true"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+            <ImageButton android:layout_width="25dp"
+                         android:layout_height="25dp"
+                         android:id="@+id/login_help"
+                         app:backgroundResource="@{ viewModel.helpBackground ? R.drawable.help_button_bg : R.color.design_default_color_surface}"
+                         android:layout_alignParentStart="true"
+                         android:layout_alignParentLeft="true"
+                         android:src="@android:drawable/ic_menu_help"
+                         android:outlineAmbientShadowColor="@color/design_default_color_secondary"
+                         android:onClick="@{() -> viewModel.showHelp()}"/>
+
+            <Button
+                    android:id="@+id/log_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/login_button_bg"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/action_log_in"
+                    android:onClick="@{() -> viewModel.attemptLogin()}"
+                    app:fontFamily="cursive"
+                    android:textColor="@color/design_default_color_surface"
+                    android:textStyle="bold"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+<TextView android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/login_card"
+          android:id="@+id/or_text"
+          android:text="OR"
+          android:textSize="@dimen/heading_text_size"
+          android:layout_centerHorizontal="true"/>
+
+<Button android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AWS Cognito Login"
+        android:id="@+id/cognito_login_button"
+        android:background="@drawable/login_button_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/or_text"
+        android:onClick="@{() -> viewModel.awsCognitoLogin()}"
+/>
+<!-- Login progress -->
+<ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/cognito_login_button"
+        android:visibility="@{viewModel.loginProgressVisibility}"
+/>
+
+
+</RelativeLayout>
